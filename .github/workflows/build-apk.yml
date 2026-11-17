@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -19,14 +20,16 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Extract project ZIP
+        run: unzip -q MPSC_Group_C_Cloud_Build.zip -d project
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle -p project assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
           name: MPSC-Group-C-Study-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: project/app/build/outputs/apk/debug/app-debug.apk
